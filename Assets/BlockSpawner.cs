@@ -16,7 +16,7 @@ public class BlockSpawner : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
-		if(transform.childCount <= 2)
+		if(transform.childCount <= 1)
 		{
 			//Invoke("SpawnNewBlock",1.0f);
 			SpawnNewBlock();
