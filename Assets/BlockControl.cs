@@ -2,15 +2,20 @@
 using System.Collections;
 
 public class BlockControl : MonoBehaviour {
+	public static float topBlockOffset = 0;
 	public float standardDistanceToSpawner = 6f;
+	public int scoreValue = 1;
+	
 	private GameObject swingingHand;
 	private GameObject blockTower;
+	private ScoreKeeper scoreKeeper;
 	
 	private bool isSwinging = true;
 	// Use this for initialization
 	void Start () {
 		swingingHand = GameObject.Find("SwingingHand");
 		blockTower = GameObject.Find("BlockTower");
+		scoreKeeper = GameObject.Find("Score").GetComponent<ScoreKeeper>();
 	}
 	
 	// Update is called once per frame
@@ -33,10 +38,12 @@ public class BlockControl : MonoBehaviour {
 			transform.parent = blockTower.transform;
 			
 			blockMismatch = transform.position.x - coll.transform.position.x;
-			if( Mathf.Abs(blockMismatch) <= coll.transform.collider2D.bounds.size.x * 0.5){
+			if( Mathf.Abs(blockMismatch) <= coll.transform.collider2D.bounds.size.x * 0.65){
 				if(transform.position.y > coll.transform.position.y){
 					coll.transform.collider2D.isTrigger = true;
-					coll.transform.renderer.material.color = Color.blue;
+					scoreKeeper.Score(scoreValue, Mathf.Abs(blockMismatch));
+					
+					//coll.transform.renderer.material.color = Color.blue;
 					AddNewBLockToTower();
 				}				
 			}
@@ -53,6 +60,9 @@ public class BlockControl : MonoBehaviour {
 		//Fix block location if the tower
 		this.rigidbody2D.isKinematic = true;
 		
+		topBlockOffset = transform.localPosition.x;
+		Debug.Log("topblock = " + topBlockOffset);
+	
 		//Avoid tilting block
 		this.transform.localEulerAngles = new Vector3(0,0,0);
 		
@@ -60,6 +70,7 @@ public class BlockControl : MonoBehaviour {
 		{
 			child.position += new Vector3(0f, CalculateDistanceAdjustment(), 0f);
 			//				Debug.Log(transform.renderer.bounds.size.y);
+			
 		}
 		
 	}
